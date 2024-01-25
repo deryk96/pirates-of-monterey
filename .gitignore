@@ -127,8 +127,8 @@ venv/
 ENV/
 env.bak/
 venv.bak/
-.xml
-.iml
+*.xml
+*.iml
 
 # Spyder project settings
 .spyderproject
