@@ -5,7 +5,7 @@ We.are.pirates. Bum-ba-dum, dum-dum-dum-dum.
 
 __author__ = "Deryk Clary, Julia MacDonald, Michael Galvan, and MaryGrace Burke"
 __credits__ = ["Deryk Clary", "Julia Macdonald", "Michael Galvan", "MaryGrace Burke"]
-__email__ = "deryk.clary@nps.edu"
+__email__ = "deryk.clary@nps.edu"  # TODO Add emails
 __status__ = "Development"
 
 import math
@@ -86,6 +86,10 @@ class Vessel:
     def num_incidents(self):
         """ Returns a count of the number of pings recorded in the track. """
         return len(self.incidents)
+
+    def get_incidents(self):
+        """ Returns the dictionary of incidents for the ship. """
+        return self.incidents
 
     def __str__(self):
         retval = self.name
