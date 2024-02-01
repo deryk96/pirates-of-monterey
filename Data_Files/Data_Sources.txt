@@ -2,3 +2,4 @@
 -Shipping Vessel Density Map: https://gmtds.maplarge.com/public/ext/GMTDS/Main?$root.map.zoom=4&$root.map.center={%22lat%22:28.9599609375,%22lng%22:-22.1484375}&$root.projectionSelect=%22EPSG:4326%22
 -Maritime Pirate Attacks file: https://openhumanitiesdata.metajnl.com/articles/10.5334/johd.39
 -ListofIncidents_IMO.xls (1994-2024): https://gisis.imo.org/Public/PAR/Reports.aspx
+-Populated Places Map: https://www.naturalearthdata.com/downloads/10m-cultural-vectors/10m-populated-places/
