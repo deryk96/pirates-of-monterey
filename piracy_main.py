@@ -3,9 +3,9 @@ This is the main file required for the Piracy Data Analysis project in Computati
 We.are.pirates. Bum-ba-dum, dum-dum-dum-dum.
 """
 
-__author__ = "Deryk Clary, Julia MacDonald, Michael Galvan, and MaryGrace Burke"
-__credits__ = ["Deryk Clary", "Julia Macdonald", "Michael Galvan", "MaryGrace Burke"]
-__email__ = ["deryk.clary@nps.edu", "ADD OTHERS"]  # TODO Add emails
+__author__ = "Deryk Clary, Julia MacDonald, Michael Galvan, and Mary Grace Burke"
+__credits__ = ["Deryk Clary", "Julia Macdonald", "Michael Galvan", "Mary Grace Burke"]
+__email__ = ["deryk.clary@nps.edu", "mary.burke@nps.edu"]  # TODO Add emails
 __status__ = "Development"
 
 # Import Libraries
