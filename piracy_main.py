@@ -16,6 +16,7 @@ import pandas as pd
 from pyproj import CRS
 import matplotlib.pyplot as plt
 
+# This is broke now
 
 def build_map(data_dict, data_path):
     """ Builds a map from a dictionary of vessels with piracy incidents. Saves the map to disk in .jpg format and
