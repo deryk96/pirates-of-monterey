@@ -4,8 +4,8 @@ We.are.pirates. Bum-ba-dum, dum-dum-dum-dum.
 """
 
 __author__ = "Deryk Clary, Julia MacDonald, Michael Galvan, and MaryGrace Burke"
-__credits__ = ["Deryk Clary", "Julia Macdonald", "Michael Galvan", "MaryGrace Burke"]
-__email__ = ["deryk.clary@nps.edu", "julia.macdonald@np.edu"]  # TODO Add emails
+__credits__ = ["Deryk Clary", "Julia Macdonald", "Michael Galvan", "Mary Grace Burke"]
+__email__ = ["deryk.clary@nps.edu", "julia.macdonald@np.edu", "michael.galvan@nps.edu", "mary.burke@nps.edu"]
 __status__ = "Development"
 
 # Import Libraries
@@ -15,7 +15,6 @@ from shapely.geometry import Point, Polygon
 import pandas as pd
 from pyproj import CRS
 import matplotlib.pyplot as plt
-
 
 def build_map(data_dict, data_path):
     """ Builds a map from a dictionary of vessels with piracy incidents. Saves the map to disk in .jpg format and
