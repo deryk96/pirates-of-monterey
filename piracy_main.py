@@ -5,7 +5,7 @@ We.are.pirates. Bum-ba-dum, dum-dum-dum-dum.
 
 __author__ = "Deryk Clary, Julia MacDonald, Michael Galvan, and MaryGrace Burke"
 __credits__ = ["Deryk Clary", "Julia Macdonald", "Michael Galvan", "MaryGrace Burke"]
-__email__ = ["deryk.clary@nps.edu", "ADD OTHERS"]  # TODO Add emails
+__email__ = ["deryk.clary@nps.edu", "julia.macdonald@np.edu"]  # TODO Add emails
 __status__ = "Development"
 
 # Import Libraries

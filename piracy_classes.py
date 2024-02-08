@@ -4,8 +4,8 @@ We.are.pirates. Bum-ba-dum, dum-dum-dum-dum.
 """
 
 __author__ = "Deryk Clary, Julia MacDonald, Michael Galvan, and MaryGrace Burke"
-__credits__ = ["Deryk Clary", "Julia Macdonald", "Michael Galvan", "MaryGrace Burke"]
-__email__ = "deryk.clary@nps.edu"  # TODO Add emails
+__credits__ = ["Deryk Clary", "Julia MacDonald", "Michael Galvan", "MaryGrace Burke"]
+__email__ = ["deryk.clary@nps.edu", "julia.macdonald@nps.edu"] # TODO Add emails
 __status__ = "Development"
 
 import math
