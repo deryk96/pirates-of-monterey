@@ -3,9 +3,9 @@ This is the main file required for the Piracy Data Analysis project in Computati
 We.are.pirates. Bum-ba-dum, dum-dum-dum-dum.
 """
 
-__author__ = "Deryk Clary, Julia MacDonald, Michael Galvan, and Mary Grace Burke"
+__author__ = "Deryk Clary, Julia MacDonald, Michael Galvan, and MaryGrace Burke"
 __credits__ = ["Deryk Clary", "Julia Macdonald", "Michael Galvan", "Mary Grace Burke"]
-__email__ = ["deryk.clary@nps.edu", "mary.burke@nps.edu"]  # TODO Add emails
+__email__ = ["deryk.clary@nps.edu", "mary.burke@nps.edu", "michael.galvan@nps.edu"]  # TODO Add emails
 __status__ = "Development"
 
 # Import Libraries
@@ -16,6 +16,7 @@ import pandas as pd
 from pyproj import CRS
 import matplotlib.pyplot as plt
 
+# This is broke now
 
 def build_map(data_dict, data_path):
     """ Builds a map from a dictionary of vessels with piracy incidents. Saves the map to disk in .jpg format and
