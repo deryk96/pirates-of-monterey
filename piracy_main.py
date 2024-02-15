@@ -16,6 +16,7 @@ import pandas as pd
 from pyproj import CRS
 import matplotlib.pyplot as plt
 
+
 def build_map(data_dict, data_path):
     """ Builds a map from a dictionary of vessels with piracy incidents. Saves the map to disk in .jpg format and
     displays the map in the console.
@@ -80,12 +81,19 @@ def build_map(data_dict, data_path):
     fig.savefig('piracy.jpg', dpi=1080, bbox_inches='tight')
 # End build_map
 
-## Begin main portion
 
-# Build dictionary from csv
-path = 'Data_Files/IMO Piracy - 2000 to 2022 (PDV 01-2023).csv'
-vessel_dict = build_vessel_dict(path)
+def main():
+    """ Main method that builds a vessel dictionary and then creates a map of all the incidents """
 
-# Build map of incidents in the console
-build_map(vessel_dict, path)
+    # Build dictionary from csv
+    path = 'Data_Files/IMO Piracy - 2000 to 2022 (PDV 01-2023).csv'
+    vessel_dict = build_vessel_dict(path)
+
+    # Build map of incidents in the console
+    build_map(vessel_dict, path)
+
+
+# Runs main() function whenever the file is executed
+if __name__ == '__main__':
+    main()
 # %%
