@@ -7,3 +7,4 @@ Data Files:
 Maps:
 -Populated Places Map: https://www.naturalearthdata.com/downloads/10m-cultural-vectors/10m-populated-places/
 -Shipping Vessel Density Map: https://gmtds.maplarge.com/public/ext/GMTDS/Main
+-Flanders Marine Institute (2021). Global Oceans and Seas, version 1. Available online at https://www.marineregions.org/. https://doi.org/10.14284/542
