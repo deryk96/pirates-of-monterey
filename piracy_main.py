@@ -86,7 +86,7 @@ def main():
     """ Main method that builds a vessel dictionary and then creates a map of all the incidents """
 
     # Build dictionary from csv
-    path = 'Data_Files/IMO Piracy - 2000 to 2022 (PDV 01-2023).csv'
+    path = 'Data_Files/[Clean] IMO Piracy - 2000 to 2022 (PDV 01-2023).csv'
     vessel_dict = build_vessel_dict(path)
 
     # Build map of incidents in the console
