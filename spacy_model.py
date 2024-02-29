@@ -9,56 +9,145 @@ __email__ = ["deryk.clary@nps.edu", "julia.macdonald@np.edu", "michael.galvan@np
 __status__ = "Development"
 
 # Import modules
+import numpy as np
 import spacy
+from spacy.matcher import Matcher
 
 
-def model_training(docs, nlp):
+def generate_matcher(nlp):
     """
-    This function trains the model for assigning entities to docs within the dataset.
-    Reference: https://course.spacy.io/en/chapter4
-    :param docs: Set of docs containing
-    :param nlp: Natural Language Processing instance
-    :return: Model trained on the docs
+    This function creates a matcher based on rules painstakingly trained by trial and error.
+    Reference: https://www.youtube.com/watch?v=4V0JDdohxAk
+    :param nlp: Initialized spaCy Natural Language Processing model
+    :return: Rule-based Matcher object with pre-built rules
     """
 
-    # Set up matcher
-    matcher = spacy.Matcher(nlp.vocab)
+    # Create matcher object
+    matcher = Matcher(nlp.vocab)
 
-    # Boarded pattern
-    boarded_patterns = [{'LOWER': 'board'}]
-    matcher.add("boarded", boarded_patterns)
+    # Create boarded patterns
+    boarded_pattern = [
+        {"LOWER": {"NOT_IN": ["police", "guard", "officers", "authority", "personnel", "attempting", "alongside"]}},
+        {"LOWER": {"NOT_IN": ["police", "guard", "officers", "authority", "personnel", "to"]}},
+        {"POS": "VERB", "LOWER": {"FUZZY": "boarded"}}]
+    boarded_pattern2 = [{"LOWER": {"IN": ["knives"]}},
+                        {"LOWER": "onboard"}]
+    boarded_pattern3 = [{'LEMMA': {"IN": ['seize']}}]  # Lemmas of seize
+    boarded_pattern4 = [{"LOWER": {"IN": ["unknown"]}, "OP": "?"},  # Example: 'unknown person escaped'
+                        {"LEMMA": {"IN": ["person", "robber", "perpetrator"]}},
+                        {"LEMMA": "escape"}]
+    boarded_pattern5 = [{"LEMMA": {"IN": ["spot"]}},  # Example: 'spotted # pirates'
+                        {"LIKE_NUM": True},
+                        {"LEMMA": {"IN": ["pirate"]}}]
+    boarded_pattern6 = [{"LEMMA": {"IN": ["robber", "pirate", "thief", "perpetrator"]}},  # Example: 'pirates escaped'
+                        {"LEMMA": {"IN": ["steal", "disembark"]}}]
+    boarded_pattern7 = [{"LEMMA": {"IN": ["manage", "climb"]}},  # Example: 'managed to climb/escape'
+                        {"IS_ALPHA": True, "OP": "?"},
+                        {"LOWER": {"IN": ["climb", "board", "escape"]}}]
+    boarded_pattern8 = [{"LOWER": {"IN": ["climbed"]}},  # Example: 'climbed on board'
+                        {"IS_ALPHA": True, "OP": "?"},
+                        {"LOWER": "board"}]
+    boarded_pattern9 = [{"LEMMA": {"IN": ["robber", "pirate", "thief", "perpetrator"]}},  # Example: 'robbers on board'
+                        {"LOWER": {"IN": ["were", "on"]}, "OP": "?"},
+                        {"LEMMA": "board"},
+                        {"LOWER": {"NOT_IN": ["attempted"]}, "OP": "?"}]
+    boarded_pattern10 = [{"LEMMA": "board"},  # Example: 'on board were pirates'
+                         {"IS_ALPHA": True, "OP": "?"},
+                         {"LEMMA": {"IN": ["robber", "pirate", "thief", "perpetrator"]}}]
+    boarded_pattern11 = [{"LEMMA": {"IN": ["robber", "pirate", "thief", "perpetrator"]}, "OP": "?"},
+                         # Example: robbers jumped overboard
+                         {"LEMMA": {"IN": ["break", "jump"]}},
+                         {"LOWER": {"IN": ["into", "overboard"]}}]
+    boarded_pattern12 = [{"LOWER": {"IN": ["lock", "door"]}},
+                         {"LOWER": "was", "OP": "?"},  # Example: lock was broken
+                         {"LEMMA": "break"}]
+    boarded_pattern13 = [{"LOWER": "on"},  # Example: pirates on board barge
+                         {"LEMMA": "board"},
+                         {"LOWER": "barge"}]
+    boarded_pattern14 = [{"LEMMA": {"IN": ["robber", "pirate", "thief", "perpetrator"]}},
+                         # Example: robbers were sighted in
+                         {"LOWER": "were"},
+                         {"LOWER": "sighted"},
+                         {"LOWER": "in"}]
+    boarded_pattern15 = [{"LOWER": "boarded", "IS_SENT_START": True}]
+    boarded_pattern16 = [{"LEMMA": 'steal'},
+                         {"LOWER": 'mooring'}]
+    boarded_pattern17 = [{"LOWER": "on"},
+                         {"LOWER": "the"},
+                         {"LOWER": "stern"}]
 
-    # Generate matches
-    for doc in docs:
+    # Hijack patterns
+    hijack_pattern = [{'LEMMA': 'hijack'}]  # Token's lemma is 'hijack'
+    hijack_pattern2 = [{'LEMMA': 'seize'},  # Token pattern: 'seize control'
+                       {'LOWER': 'control'}]
+
+    # Hostage/crew assaulted patterns
+    hostage_pattern = [{'LEMMA': {'IN': ['abduct', 'kidnap', 'hostage']}}]  # Lemmas: abduct, kidnap, hostage
+    crew_assault_pattern = [{'LEMMA': 'assault'}]
+
+    # Add patterns to matcher with associated categories
+    matcher.add('BOARDED', [boarded_pattern, boarded_pattern2, boarded_pattern3, boarded_pattern4, boarded_pattern5,
+                            boarded_pattern6, boarded_pattern7, boarded_pattern8, boarded_pattern9,
+                            boarded_pattern10, boarded_pattern11, boarded_pattern12, boarded_pattern13,
+                            boarded_pattern14, boarded_pattern15, boarded_pattern16, boarded_pattern17,
+                            hijack_pattern, hijack_pattern2, hostage_pattern])
+    matcher.add('HIJACKED', [hijack_pattern, hijack_pattern2])
+    matcher.add('HOSTAGES_TAKEN', [hostage_pattern])
+    matcher.add('CREW_ASSAULTED', [crew_assault_pattern])
+
+    # Return resulting matcher object
+    return matcher
+
+
+def custom_matcher(data_df, docs, matcher):
+    """
+    Takes the dataframe, Doc objects, and matcher, and puts all the data into the dataframe.
+    :param data_df: Dataframe to store all the match data
+    :param docs: Doc objects for all the strings in a column of the dataframe
+    :param matcher: Matcher object initialized with preset rules (see generate_matcher)
+    :return: Completed dataframe with all matches places into the columns as binary
+    """
+    for ix, doc in enumerate(docs):
+        # Get matches in the doc and extract the found tags' strings
         matches = matcher(doc)
-        spans = [spacy.Span(doc, start, end, label=match_id)
-                 for match_id, start, end in matches]
-        doc.ents = spans
-        docs.append(doc)
+        matches_str = [doc.vocab.strings[x[0]] for x in matches]
 
-    # Save the model
-    doc_bin = spacy.DocBin(docs=docs)
-    doc_bin.to_disk("./train.spacy")
+        # Add all matches found into matched_df
+        data_df.at[ix,'BOARDED'] = np.where('BOARDED' in matches_str, 1, 0)
+        data_df.at[ix,'HIJACKED'] = np.where('HIJACKED' in matches_str, 1, 0)
+        # Below are commented out because the matcher isn't trained to handle them yet
+        # training_data.at[ix,'HOSTAGES_TAKEN'] = np.where('HOSTAGES_TAKEN' in matches_str, 1, 0)
+        # training_data.at[ix,'CREW_ASSAULTED'] = np.where('CREW_ASSAULTED' in matches_str, 1, 0)
 
+    return data_df
 
-def relevant_chunks(doc):
-    for chunk in doc.noun_chunks:
-        if chunk.root.head.lemma_ in ['buy', 'purchase']:  # Replace with relevant verbs
-            if chunk.rood.dep_ == 'dobj':
-                yield chunk
-
-def model_tester(doc, nlp):
+def style(s, bold=False):
     """
-    This function prints out all matches for a given doc.
-    :param doc: A single Spacy doc
-    :return: None
+    Style dependencies for html_generator method below.
+    Reference: https://www.youtube.com/watch?v=4V0JDdohxAk
     """
+    blob = f"<text>{s}</text>"
+    if bold:
+        blob = f"<b style='background-color: #fff59d'>{blob}</b>"
+    return blob
 
-    # Displays a nice rendered display of matching tokens
-    spacy.displacy.render(doc, style='ent')
 
-    # Iterate through all matches and view traits
-    for match_id, start, end in doc:
-        span = doc[start:end]
-        string_id = nlp.vocab.strings[match_id]
-        print(match_id, start, end, span.text, string_id)
+def html_generator(g, matcher, n=10):
+    """
+    Generate HTML representation of all the matches found in a Document object.
+    Highlights all matches based on the Matcher object.
+    :param g: String to be represented
+    :param matcher: Matcher object to find all matches that w
+    :param n: Number of entries to show/print
+    :return: Blob to print
+    """
+    blob = ""
+    for i in range(n):
+        doc = next(g)
+
+        state = [[t, False] for t in doc]
+        for idx, start, end in matcher(doc):
+            for i in range(start, end):
+                state[i][1] = True
+        blob += style(' '.join([style(str(t[0]), bold=t[1]) for t in state]) + '<br>')
+    return blob
