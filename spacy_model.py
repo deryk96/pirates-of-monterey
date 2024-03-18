@@ -113,13 +113,63 @@ def custom_matcher(data_df, docs, matcher):
         matches_str = [doc.vocab.strings[x[0]] for x in matches]
 
         # Add all matches found into matched_df
-        data_df.at[ix,'BOARDED'] = np.where('BOARDED' in matches_str, 1, 0)
-        data_df.at[ix,'HIJACKED'] = np.where('HIJACKED' in matches_str, 1, 0)
+        data_df.at[ix, 'BOARDED'] = np.where('BOARDED' in matches_str, 1, 0)
+        data_df.at[ix, 'HIJACKED'] = np.where('HIJACKED' in matches_str, 1, 0)
         # Below are commented out because the matcher isn't trained to handle them yet
         # training_data.at[ix,'HOSTAGES_TAKEN'] = np.where('HOSTAGES_TAKEN' in matches_str, 1, 0)
         # training_data.at[ix,'CREW_ASSAULTED'] = np.where('CREW_ASSAULTED' in matches_str, 1, 0)
 
     return data_df
+
+
+def apply_nlp(text, nlp):
+    """
+    Apply the NLP to each text that is passed to the function from the apply function
+    :param text: Text to be tested for categories
+    :param nlp: NLP object that identifies categories
+    :return: Tuple with (was boarded, was hijacked, hostages, assault)
+    """
+    doc = nlp(text)
+
+    boarded = hijacked = hostages = assault = 0
+
+    for span in doc.spans['sc']:
+        if span.label_ == 'BOARDED':
+            boarded = 1
+        if span.label_ == 'HIJACKED':
+            hijacked = 1
+        if span.label_ == 'HOSTAGES_TAKEN':
+            hostages = 1
+        if span.label_ == 'CREW_ASSAULTED':
+            assault = 1
+
+    return boarded, hijacked, hostages, assault
+
+
+def model_interpreter(data_df, column_name, nlp):
+    """
+    Function to apply the NLP model to the specified column.
+    Puts the results in new columns in the Dataframe
+    :param data_df: Dataframe with data to test
+    :param column_name: (String) Column name that you'd like to test
+    :param nlp: NLP to categorize the data
+    :return: Dataframe with hijacked and boarded columns based on what the model found.
+    """
+    # Apply passed nlp to specified column, put resulting tuple in result column
+    data_df['RESULT'] = data_df[column_name].apply(apply_nlp, args=[nlp])
+
+    # Split results into their associated columns
+    data_df['BOARDED'] = np.where(data_df['RESULT'].str[0] == 1, 1, 0)
+    data_df['HIJACKED'] = np.where(data_df['RESULT'].str[1] == 1, 1, 0)
+    data_df['HOSTAGES_TAKEN'] = np.where(data_df['RESULT'].str[2] == 1, 1, 0)
+    data_df['CREW_ASSAULTED'] = np.where(data_df['RESULT'].str[3] == 1, 1, 0)
+
+    # Drop results column
+    data_df.drop(columns=['RESULT'], axis=1, inplace=True)
+
+    # Return resulting df
+    return data_df
+
 
 def style(s, bold=False):
     """

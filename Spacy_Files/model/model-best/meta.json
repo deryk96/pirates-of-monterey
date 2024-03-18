@@ -1,0 +1,48 @@
+{
+  "lang":"en",
+  "name":"pipeline",
+  "version":"0.0.0",
+  "spacy_version":">=3.7.2,<3.8.0",
+  "description":"",
+  "author":"",
+  "email":"",
+  "url":"",
+  "license":"",
+  "spacy_git_version":"a89eae928",
+  "vectors":{
+    "width":300,
+    "vectors":20000,
+    "keys":514157,
+    "name":"en_vectors",
+    "mode":"default"
+  },
+  "labels":{
+    "tok2vec":[
+
+    ],
+    "spancat":[
+      "BOARDED",
+      "HOSTAGES_TAKEN",
+      "CREW_ASSAULTED",
+      "HIJACKED"
+    ]
+  },
+  "pipeline":[
+    "tok2vec",
+    "spancat"
+  ],
+  "components":[
+    "tok2vec",
+    "spancat"
+  ],
+  "disabled":[
+
+  ],
+  "performance":{
+    "spans_sc_f":0.9351851852,
+    "spans_sc_p":0.9901960784,
+    "spans_sc_r":0.8859649123,
+    "tok2vec_loss":0.0000015028,
+    "spancat_loss":397.0138889638
+  }
+}
