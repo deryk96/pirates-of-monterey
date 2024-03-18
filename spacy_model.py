@@ -1,6 +1,5 @@
 """
-This file contains the model for Spacy to assign entities to strings in our dataset.
-We.are.pirates. Bum-ba-dum, dum-dum-dum-dum.
+This file contains the dependent functions to create a Token-based Matcher and a SpanCat model.
 """
 
 __author__ = "Deryk Clary, Julia MacDonald, Michael Galvan, and MaryGrace Burke"
@@ -10,7 +9,6 @@ __status__ = "Development"
 
 # Import modules
 import numpy as np
-import spacy
 from spacy.matcher import Matcher
 
 
@@ -115,9 +113,10 @@ def custom_matcher(data_df, docs, matcher):
         # Add all matches found into matched_df
         data_df.at[ix, 'BOARDED'] = np.where('BOARDED' in matches_str, 1, 0)
         data_df.at[ix, 'HIJACKED'] = np.where('HIJACKED' in matches_str, 1, 0)
-        # Below are commented out because the matcher isn't trained to handle them yet
-        # training_data.at[ix,'HOSTAGES_TAKEN'] = np.where('HOSTAGES_TAKEN' in matches_str, 1, 0)
-        # training_data.at[ix,'CREW_ASSAULTED'] = np.where('CREW_ASSAULTED' in matches_str, 1, 0)
+
+        # Below tags are not fully vetted yet, but mildly work
+        data_df.at[ix,'HOSTAGES_TAKEN'] = np.where('HOSTAGES_TAKEN' in matches_str, 1, 0)
+        data_df.at[ix,'CREW_ASSAULTED'] = np.where('CREW_ASSAULTED' in matches_str, 1, 0)
 
     return data_df
 
@@ -126,7 +125,7 @@ def apply_nlp(text, nlp):
     """
     Apply the NLP to each text that is passed to the function from the apply function
     :param text: Text to be tested for categories
-    :param nlp: NLP object that identifies categories
+    :param nlp: Trained NLP object that identifies categories
     :return: Tuple with (was boarded, was hijacked, hostages, assault)
     """
     doc = nlp(text)
@@ -152,7 +151,7 @@ def model_interpreter(data_df, column_name, nlp):
     Puts the results in new columns in the Dataframe
     :param data_df: Dataframe with data to test
     :param column_name: (String) Column name that you'd like to test
-    :param nlp: NLP to categorize the data
+    :param nlp: Trained NLP to categorize the data
     :return: Dataframe with hijacked and boarded columns based on what the model found.
     """
     # Apply passed nlp to specified column, put resulting tuple in result column
@@ -186,6 +185,7 @@ def html_generator(g, matcher, n=10):
     """
     Generate HTML representation of all the matches found in a Document object.
     Highlights all matches based on the Matcher object.
+    Reference: https://www.youtube.com/watch?v=4V0JDdohxAk
     :param g: String to be represented
     :param matcher: Matcher object to find all matches that w
     :param n: Number of entries to show/print
