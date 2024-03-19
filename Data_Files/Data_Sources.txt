@@ -2,9 +2,9 @@ Data Files:
 -DataWorld IMO Piracy file: https://data.world/project-data-viz/imo-piracy-2000-to-2022-pdv-01-2023a
 -Maritime Pirate Attacks file: https://openhumanitiesdata.metajnl.com/articles/10.5334/johd.39
 -ListofIncidents_IMO (1994-2024): https://gisis.imo.org/Public/PAR/Reports.aspx
-
+-cocom_countries: pulled from lab 3
+-imo-vessel-codes: https://github.com/warrantgroup/IMO-Vessel-Codes/tree/master
 
 Maps:
--Populated Places Map: https://www.naturalearthdata.com/downloads/10m-cultural-vectors/10m-populated-places/
 -Shipping Vessel Density Map: https://gmtds.maplarge.com/public/ext/GMTDS/Main
 -Flanders Marine Institute (2021). Global Oceans and Seas, version 1. Available online at https://www.marineregions.org/. https://doi.org/10.14284/542
